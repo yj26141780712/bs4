@@ -1,0 +1,6 @@
+<div class="machineManagement">
+  <navigation [name]="navigations"></navigation>
+  <div class="machine_content">
+    <app-table [settings]="settings" [source]="source" (operationEvent)="operationEvent($event)" (addEvent)="addEvent($event)"></app-table>
+  </div>
+</div>

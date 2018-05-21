@@ -1,0 +1,88 @@
+<form [formGroup]="machineForm" (ngSubmit)="submit(machineForm.value)">
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">{{title}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="machineCode">注塑机编号：</label>
+            <div class="col-sm-6">
+                <input required type="text" name="machineCode" class="form-control" formControlName="machineCode" placeholder="注塑机编号">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="machineName">注塑机名称：</label>
+            <div class="col-sm-6">
+                <input required type="text" name="machineName" class="form-control" formControlName="machineName" placeholder="注塑机名称">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="machineType">注塑机类型：</label>
+            <div class="col-sm-6">
+                <input required type="text" name="machineType" class="form-control" formControlName="machineType" placeholder="注塑机类型">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="moniterId">采集器编号：</label>
+            <div class="col-sm-6">
+                <input required type="text" name="moniterId" class="form-control" formControlName="moniterId" placeholder="采集器编号">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="outFactoryPerson">出厂调试人员：</label>
+            <div class="col-sm-6">
+                <input type="text" name="outFactoryPerson" class="form-control" formControlName="outFactoryPerson" placeholder="出厂调试人员">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="outFactoryDate">出厂日期：</label>
+            <div class="col-sm-6">
+                <input required type="date" name="outFactoryDate" class="form-control" formControlName="outFactoryDate" placeholder="出厂日期">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="proxyCompany">代理公司：</label>
+            <div class="col-sm-6">
+                <select required class="form-control" name="proxyCompany" formControlName="proxyCompany">
+          <option *ngFor="let company of proxyCompanys" [value]="company.id">{{company.name}}</option>
+        </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="area">所属片区：</label>
+            <div class="col-sm-6">
+                <select required class="form-control" name="area" formControlName="area">
+          <option *ngFor="let a of areas" [value]="a.id">{{a.name}}</option>
+        </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="gpsInfo">GPS信息：</label>
+            <div class="col-sm-4 p-r-0">
+                <input required type="text" name="gpsInfo" class="form-control" formControlName="gpsInfo" placeholder="GPS信息">
+            </div>
+            <div class="col-sm-2 p-l-0">
+                <a class="btn btn-primary">拾取</a>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="type">类型：</label>
+            <div class="col-sm-6">
+                <select required class="form-control" name="type" formControlName="type">
+                    <option *ngFor="let type of types" [value]="type.id">{{type.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="form-control-label text-right col-sm-3" for="remarks">备注信息：</label>
+            <div class="col-sm-6">
+                <input type="text" name="remarks" class="form-control" formControlName="remarks" placeholder="备注">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-sm btn-primary" value="提交">
+    </div>
+</form>
