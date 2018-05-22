@@ -26,7 +26,7 @@ export class IlinkMapComponent implements OnInit {
   constructor(private gs: GlobalService, private router: Router) {
   }
   ngOnInit() {
-    this.company_id = localStorage.getItem('companyid');
+    this.company_id = localStorage.getItem('companyId');
     this.countBtn = this.typeBtn = [
       { name: "day", title: "今日" },
       { name: "month", title: "本月" },
@@ -152,7 +152,6 @@ export class IlinkMapComponent implements OnInit {
    * @param name 按钮名字
    */
   countSelect(name: string) {
-    this.countBtnSelect = name;
     this.run_m(this.countBtnSelect);
   }
   /**
@@ -162,6 +161,7 @@ export class IlinkMapComponent implements OnInit {
   run_m(name: string) {
     this.gs.httpGet(Global.domain + "api/apilineChart.action?companyId=" + (this.company_id || '') + "&tag=" + name, {}, json => {
       let data = json;
+      this.countBtnSelect = name;
       if (data.code == 200) {
         let dataX = [];
         let dataY = [];
@@ -226,7 +226,6 @@ export class IlinkMapComponent implements OnInit {
    * @param name 按钮名称
    */
   typeSelect(name: string) {
-    this.typeBtnSelect = name;
     this.m_propor(name);
   }
   /**
@@ -236,6 +235,7 @@ export class IlinkMapComponent implements OnInit {
   m_propor(name: string) {
     this.gs.httpGet(Global.domain + "api/apipieChart.action?companyId=" + (this.company_id || '') + "&tag=" + name, {},
       json => {
+        this.typeBtnSelect = name;
         let data = json;
         if (data.code == 200) {
           let pieData = [];

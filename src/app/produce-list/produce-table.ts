@@ -10,7 +10,7 @@ import { Global, GlobalService } from '../tools/services/global';
   styleUrls: ['./produce-list.component.scss']
 })
 export class ProduceTable implements OnInit {
-  companyid: any;
+  companyId: any;
   Machine_data: any;
   navigations: Array<string> = ['主页', '监控管理', '机器列表'];
   module_table_thead: Array<string> = ['编号', '名称', '机器状态', '机器动作', '马达动作', '电热状态', '生产模数', '全程计时', '开机时间'];
@@ -44,9 +44,9 @@ export class ProduceTable implements OnInit {
     })
   }
   getMachineCount(callback): void {
-    this.companyid = localStorage.getItem('companyid');
-    this.gs.httpGet(Global.domain + 'api/apideviceList.action?companyId=' + this.companyid || '', {}, json => {
-      //根据companyid筛选
+    this.companyId = localStorage.getItem('companyId');
+    this.gs.httpGet(Global.domain + 'api/apideviceList.action?companyId=' + this.companyId || '', {}, json => {
+      //根据companyId筛选
       var array = [];
       for (var i = 0; i < json.obj.length; i++) {
         array.push(json.obj[i]);

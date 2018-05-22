@@ -8,7 +8,7 @@ import { Headers, Http, Response, RequestOptions } from '@angular/http';
   styleUrls: ['./Machine.scss']
 })
 export class Client implements OnInit {
-  companyid: any;
+  companyId: any;
   data: any;
   navigations: Array<string> = ['主页', '档案管理', '客户管理'];
   module_table_thead: Array<string> = ['塑料厂ID', '塑料厂名称', '添加时间', '备注信息', '状态'];
@@ -21,7 +21,7 @@ export class Client implements OnInit {
   }
 
   ngOnInit() {
-    this.companyid = localStorage.getItem('companyid');
+    this.companyId = localStorage.getItem('companyId');
     this.getClientData(() => {
       var array = [];
       for (var i = 0; i < this.data.length; i++) {
@@ -38,7 +38,7 @@ export class Client implements OnInit {
     });
   }
   getClientData(callback) {
-    this.gs.httpGet(Global.domain + 'api/apishowClients.action?companyId=' + this.companyid, {}, json => {
+    this.gs.httpGet(Global.domain + 'api/apishowClients.action?companyId=' + this.companyId, {}, json => {
       this.data = json.obj;
       callback();
     })

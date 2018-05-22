@@ -9,7 +9,7 @@ import { Global, GlobalService } from '../tools/services/global';
 })
 export class AreaManagement implements OnInit {
   areaData: any;
-  companyid: any;
+  companyId: any;
   module_table_thead: Array<string> = ['片区名称', '备注信息'];
   navigations: Array<string> = ['主页', '档案管理', '片区管理'];
   module_table_body: Array<Object> = [];
@@ -20,7 +20,7 @@ export class AreaManagement implements OnInit {
   }
 
   ngOnInit() {
-    this.companyid = localStorage.getItem('companyid');
+    this.companyId = localStorage.getItem('companyId');
     this.getAreaData(() => {
       var array = []
       for (var i = 0; i < this.areaData.length; i++) {
@@ -34,7 +34,7 @@ export class AreaManagement implements OnInit {
     });
   }
   getAreaData(callback) {
-    this.gs.httpGet(Global.domain + 'api/apiareas.action?companyId=' + this.companyid, {}, json => {
+    this.gs.httpGet(Global.domain + 'api/apiareas.action?companyId=' + this.companyId, {}, json => {
       this.areaData = json.obj;
       callback();
     })

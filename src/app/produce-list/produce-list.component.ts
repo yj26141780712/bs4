@@ -10,7 +10,7 @@ import { Global, GlobalService } from '../tools/services/global';
 })
 export class ProduceListComponent implements OnInit {
   data: any;
-  companyid: any;
+  companyId: any;
   MachineList: any = [];//全部机器
   page_data: Object[];//当前页机器
   machine_count: number;//机器总数
@@ -58,17 +58,17 @@ export class ProduceListComponent implements OnInit {
     });
   }
   getMachineCount(callback): void {
-    this.companyid = localStorage.getItem('companyid');
-    //console.log(this.companyid)
-    this.gs.httpGet(Global.domain + 'api/apideviceList.action?companyId=' + this.companyid || '', {}, json => {
-      //根据companyid筛选
+    this.companyId = localStorage.getItem('companyId');
+    //console.log(this.companyId)
+    this.gs.httpGet(Global.domain + 'api/apideviceList.action?companyId=' + this.companyId || '', {}, json => {
+      //根据companyId筛选
       var array = [];
       for (var i = 0; i < json.obj.length; i++) {
         if (json.obj[i].workstate != "离线") array.push(json.obj[i]);
       }
       for (var i = 0; i < json.obj.length; i++) {
         if (json.obj[i].workstate == "离线") array.push(json.obj[i]);
-      }  // update by yangjie 2018-04-26 增加|| !this.companyid 优先显示非离线
+      }  // update by yangjie 2018-04-26 增加|| !this.companyId 优先显示非离线
       this.data = [].concat(array);
       callback();
     })

@@ -1,5 +1,6 @@
+import { MachineService } from './../tools/services/machine.service';
 import { Component, OnInit, Input, Output, OnChanges, AfterViewInit, EventEmitter } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Global } from '../tools/services/global';
 import * as $ from 'jquery';
 
@@ -22,7 +23,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() addEvent = new EventEmitter();
 
   url: string = Global.domain + 'api/';
-  companyid: any;
+  companyId: any;
   total_data = [];//获取到的信息总数
   tbody_show_count: number = 10;//显示几条
   sort_show: boolean;//是否显示排序
@@ -35,13 +36,13 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit {
   pages: number = 1;  //总页数
   isAdd: boolean = false;
   isfunction: boolean = false;
-  constructor() { }
+  constructor(private ms: MachineService) { }
 
   ngOnInit() {
     if (this.module_table_search != undefined) {
       document.getElementById('searchAttribute').setAttribute('placeholder', this.module_table_search.name);
     }
-    this.companyid = localStorage.getItem('companyid');
+    this.companyId = localStorage.getItem('companyId');
     this.isAdd = this.addEvent.observers.length > 0;
     console.log(this.isAdd);
   }
@@ -162,10 +163,9 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit {
  * @param item 操作项
  */
   opClick(event: Event, op, item) {
+    console.log(item);
+    op.callBack(item);
     event.stopPropagation();
-    op.item = item;
-    this.operationEvent.emit(op);
-    //return false;
   }
 
   /**

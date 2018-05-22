@@ -44,7 +44,7 @@ export class iLinklogin implements OnInit {
         console.log(json);
         localStorage.setItem('username', this.loginInfo.username);
         localStorage.setItem('isRemember', this.loginInfo.isRemember + '');
-        localStorage.setItem('companyid', json.obj.companyid || ''); // add by yangjie 20180426 || ''
+        localStorage.setItem('companyId', json.obj.companyid || ''); // add by yangjie 20180426 || ''
         localStorage.setItem('id', json.obj.id);
         localStorage.setItem('companyName', json.obj.companyName);
         localStorage.setItem('roleName', json.obj.roleName);

@@ -1,3 +1,4 @@
+import { MachineService } from './../tools/services/machine.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeRoutingModule } from './home-routing.module';
@@ -78,6 +79,7 @@ import { TableComponent } from '../table/table.component';
     MachineComponent,
     TableComponent
   ],
+  providers:[MachineService],
   entryComponents:[FittingComponent,SetMachineComponent,MachineFormComponent]  
 })
 export class HomeModule { 

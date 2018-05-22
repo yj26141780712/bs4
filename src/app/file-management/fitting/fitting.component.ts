@@ -18,7 +18,7 @@ export class FittingComponent implements OnInit {
 
   machine: any;
   total_data = [];//获取到的信息总数
-  companyid: any;
+  companyId: any;
   tbody_show_count: number = 10;//显示几条
   sort_show: boolean;//是否显示排序
   sort_flag: number = 2;//0升序，1降序，2双向箭头

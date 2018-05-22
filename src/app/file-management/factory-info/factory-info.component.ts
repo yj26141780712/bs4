@@ -35,7 +35,7 @@ export class FactoryInfoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.companyId = localStorage.getItem("companyid")
+    this.companyId = localStorage.getItem("companyId")
     let url = Global.domain + 'api/apishowFactoryInfo.action';
     this.gs.httpGet(url, {companyId:this.companyId}, json => {
       if (json.code == 200) {

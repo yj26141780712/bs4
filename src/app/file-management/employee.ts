@@ -10,7 +10,7 @@ import { Global, GlobalService } from '../tools/services/global';
 })
 export class Employee implements OnInit {
   data: any;
-  companyid: any;
+  companyId: any;
   navigations: Array<string> = ['主页', '档案管理', '用户管理'];
   module_table_thead: Array<string> = ['用户账号', '角色信息', '对应公司', '用户姓名', '联系电话', '备注信息', '状态'];
   module_table_body: Array<Object> = [];
@@ -20,7 +20,7 @@ export class Employee implements OnInit {
   constructor(private gs: GlobalService) { }
 
   ngOnInit() {
-    this.companyid = localStorage.getItem('companyid');
+    this.companyId = localStorage.getItem('companyId');
     this.getEmployee(() => {
       var array = [];
       for (var i = 0; i < this.data.length; i++) {
@@ -41,7 +41,7 @@ export class Employee implements OnInit {
     });
   }
   getEmployee(callback) {
-    this.gs.httpGet(Global.domain + 'api/apishowCompanyUsers.action?companyId=' + this.companyid, {}, json => {
+    this.gs.httpGet(Global.domain + 'api/apishowCompanyUsers.action?companyId=' + this.companyId, {}, json => {
       this.data = json.obj;
       callback();
     })

@@ -81,7 +81,7 @@ export class ModuleTable implements OnInit {
   @Output() AreaEvent = new EventEmitter();
   url: string = Global.domain + 'api/';
   total_data = [];//获取到的信息总数
-  companyid: any;
+  companyId: any;
   tbody_show_count: number = 10;//显示几条
   sort_show: boolean;//是否显示排序
   sort_flag: number = 2;//0升序，1降序，2双向箭头
@@ -99,7 +99,7 @@ export class ModuleTable implements OnInit {
     if (this.module_table_search != undefined) {
       document.getElementById('searchAttribute').setAttribute('placeholder', this.module_table_search.name);
     }
-    this.companyid = localStorage.getItem('companyid');
+    this.companyId = localStorage.getItem('companyId');
     switch (this.module_table_type) {
       case "area":
       case 'log':
@@ -286,7 +286,7 @@ export class ModuleTable implements OnInit {
         var clientId = <HTMLInputElement>document.getElementById('clientid');
         var name = <HTMLInputElement>document.getElementById('name');
         var status = <HTMLInputElement>document.getElementById('status');
-        this.gs.httpGet(Global.domain + 'api/apisaveClient.action?client.id=&client.clientId=' + clientId.value + '&client.clientName=' + name.value + '&client.status=' + status.value + '&companyId=' + this.companyid, {}, json => {
+        this.gs.httpGet(Global.domain + 'api/apisaveClient.action?client.id=&client.clientId=' + clientId.value + '&client.clientName=' + name.value + '&client.status=' + status.value + '&companyId=' + this.companyId, {}, json => {
           if (json.code == 200) {
             this.ClientEvent.emit("ok");
           }
@@ -378,7 +378,7 @@ export class ModuleTable implements OnInit {
       confirmButtonColor: "#DD6B55",
     }).then((result) => {
       if (result.value) {
-        this.gs.httpGet(this.url + 'apiuserStart.action?userId=' + this.page_data[num].id + '&companyId=' + this.companyid, {}, json => {
+        this.gs.httpGet(this.url + 'apiuserStart.action?userId=' + this.page_data[num].id + '&companyId=' + this.companyId, {}, json => {
 
           if (json.code == 200) {
             this.EmployeeEvent.emit("ok");
@@ -399,7 +399,7 @@ export class ModuleTable implements OnInit {
       confirmButtonColor: "#DD6B55",
     }).then((result) => {
       if (result.value) {
-        this.gs.httpGet(this.url + 'apiuserDel.action?userId=' + this.page_data[num].id + '&companyId=' + this.companyid, {}, json => {
+        this.gs.httpGet(this.url + 'apiuserDel.action?userId=' + this.page_data[num].id + '&companyId=' + this.companyId, {}, json => {
 
           if (json.code == 200) {
             this.EmployeeEvent.emit("ok");
@@ -411,7 +411,7 @@ export class ModuleTable implements OnInit {
   //新增用户
   addEmployee() {
     let _url = Global.domain + "api/apigetRoleListByCompany";
-    this.gs.httpGet(_url, { companyId: this.companyid }, json => {
+    this.gs.httpGet(_url, { companyId: this.companyId }, json => {
       this.addEmployeeBack(json.obj);
     })
   }
@@ -458,7 +458,7 @@ export class ModuleTable implements OnInit {
         var phone = <HTMLInputElement>document.getElementById('phone');
         var notes = <HTMLInputElement>document.getElementById('notes');
 
-        this.gs.httpGet(this.url + 'apiuserAdd.action?user.username=' + Id.value + '&user.password=' + Password.value + '&user.roleid=' + role.value + '&user.name=' + username.value + '&user.phone=' + phone.value + '&user.note=' + notes.value + '&user.companyid=' + this.companyid, {}, json => {
+        this.gs.httpGet(this.url + 'apiuserAdd.action?user.username=' + Id.value + '&user.password=' + Password.value + '&user.roleid=' + role.value + '&user.name=' + username.value + '&user.phone=' + phone.value + '&user.note=' + notes.value + '&user.companyId=' + this.companyId, {}, json => {
 
           if (json.code == 200) {
             this.EmployeeEvent.emit("ok");
@@ -470,7 +470,7 @@ export class ModuleTable implements OnInit {
   //修改用户
   changeEmployee(num) {
     let _url = Global.domain + "api/apigetRoleListByCompany";
-    this.gs.httpGet(_url, { companyId: this.companyid }, json => {
+    this.gs.httpGet(_url, { companyId: this.companyId }, json => {
       this.changeEmployeeBack(num, json.obj);
     })
   }
@@ -592,7 +592,7 @@ export class ModuleTable implements OnInit {
         var address = <HTMLInputElement>document.getElementById('companyAddress');
         var phone = <HTMLInputElement>document.getElementById('phone');
         var notes = <HTMLInputElement>document.getElementById('notes');
-        this.gs.httpGet(this.url + 'apicompanyAdd.action?companyId=' + this.companyid + '&company.name=' + Name.value + '&company.address=' + address.value + '&company.phone=' + phone.value + '&company.note=' + notes.value, {}, json => {
+        this.gs.httpGet(this.url + 'apicompanyAdd.action?companyId=' + this.companyId + '&company.name=' + Name.value + '&company.address=' + address.value + '&company.phone=' + phone.value + '&company.note=' + notes.value, {}, json => {
           if (json.code == 200) {
             this.CompanyEvent.emit("ok");
           }
@@ -612,7 +612,7 @@ export class ModuleTable implements OnInit {
       confirmButtonColor: "#DD6B55",
     }).then((result) => {
       if (result.value) {
-        this.gs.httpGet(this.url + 'apicompanyDel.action?companyId=' + this.companyid + '&delCompanyId=' + this.page_data[num].id, {}, json => {
+        this.gs.httpGet(this.url + 'apicompanyDel.action?companyId=' + this.companyId + '&delCompanyId=' + this.page_data[num].id, {}, json => {
           if (json.code == 200) {
             this.CompanyEvent.emit("ok");
           }
@@ -721,7 +721,7 @@ export class ModuleTable implements OnInit {
         var phone = <HTMLInputElement>document.getElementById('phone');
         var notes = <HTMLInputElement>document.getElementById('notes');
         var id = <HTMLInputElement>document.getElementById('userid');
-        this.gs.httpGet(this.url + 'apieditAdmin.action?user.username=' + username.value + '&user.name=' + Name.value + '&user.note=' + notes.value + '&user.phone=' + phone.value + '&user.companyid=' + this.page_data[num].id + '&user.id=' + id.value, {}, json => {
+        this.gs.httpGet(this.url + 'apieditAdmin.action?user.username=' + username.value + '&user.name=' + Name.value + '&user.note=' + notes.value + '&user.phone=' + phone.value + '&user.companyId=' + this.page_data[num].id + '&user.id=' + id.value, {}, json => {
           if (json.code == 200) {
             this.MachineEvent.emit("ok");
           }
@@ -733,9 +733,9 @@ export class ModuleTable implements OnInit {
   //新增注塑机
   addMachine() {  //add by yangjie 20180427 修改下拉框
     //this.bsModalRef = this.modalService.show(MachineFormComponent); 
-    let _url_model = this.url + "apifindModelsByCompany.action?companyId=" + this.companyid;
-    let _url_company = this.url + "apicompanys.action?companyId=" + this.companyid;
-    let _url_area = this.url + "apiareas.action?companyid=" + this.companyid;
+    let _url_model = this.url + "apifindModelsByCompany.action?companyId=" + this.companyId;
+    let _url_company = this.url + "apicompanys.action?companyId=" + this.companyId;
+    let _url_area = this.url + "apiareas.action?companyId=" + this.companyId;
     let _data_model = null;
     let _data_company = null;
     let _data_area = null;
@@ -762,7 +762,7 @@ export class ModuleTable implements OnInit {
         _option_model += `<option value="${obj.id}">${obj.name}</option>`;
       }
       for (const obj of data_area) {
-        if (obj.companyid == this.companyid) {
+        if (obj.companyId == this.companyId) {
           _option_area += `<option value="${obj.id}">${obj.name}</option>`;
         }
       }
@@ -864,7 +864,7 @@ export class ModuleTable implements OnInit {
         var GPS = <HTMLInputElement>document.getElementById('GPS');
         var remarks = <HTMLInputElement>document.getElementById('remarks');
         if (result.value) {
-          this.gs.httpGet(this.url + 'apideviceAdd.action?device.sn=' + Mid.value + '&device.name=' + MName.value + '&device.modelid=' + status.value + '&device.monitorid=' + moniter.value + '&device.cpersonnel=' + out_name.value + '&device.ddate=' + out_date.value + '&device.proxyid=' + proxy_com.value + '&device.areaid=' + area.value + '&device.gps=' + GPS.value + '&device.note=' + remarks.value + '&device.companyid=' + this.companyid + '&device.luser=' + userid + '&device.deviceType=' + Mtype.value, {}, json => {
+          this.gs.httpGet(this.url + 'apideviceAdd.action?device.sn=' + Mid.value + '&device.name=' + MName.value + '&device.modelid=' + status.value + '&device.monitorid=' + moniter.value + '&device.cpersonnel=' + out_name.value + '&device.ddate=' + out_date.value + '&device.proxyid=' + proxy_com.value + '&device.areaid=' + area.value + '&device.gps=' + GPS.value + '&device.note=' + remarks.value + '&device.companyId=' + this.companyId + '&device.luser=' + userid + '&device.deviceType=' + Mtype.value, {}, json => {
             if (json.code == 200) {
               this.MachineEvent.emit("ok");
             }
@@ -886,7 +886,7 @@ export class ModuleTable implements OnInit {
       confirmButtonColor: "#DD6B55",
     }).then((result) => {
       if (result.value) {
-        let _url = this.url + 'apideviceDel.action?companyId=' + this.companyid + '&deviceId=' + this.page_data[num].id;
+        let _url = this.url + 'apideviceDel.action?companyId=' + this.companyId + '&deviceId=' + this.page_data[num].id;
         this.gs.httpGet(_url, {}, json => {
           if (json.code == 200) {
             this.MachineEvent.emit("ok");
@@ -897,9 +897,9 @@ export class ModuleTable implements OnInit {
   }
   //编辑   //add by yangjie 20180427
   editMachine(num) {
-    let _url_model = this.url + "apifindModelsByCompany.action?companyId=" + this.companyid;
-    let _url_company = this.url + "apicompanys.action?companyId=" + this.companyid;
-    let _url_area = this.url + "apiareas.action?companyid=" + this.companyid;
+    let _url_model = this.url + "apifindModelsByCompany.action?companyId=" + this.companyId;
+    let _url_company = this.url + "apicompanys.action?companyId=" + this.companyId;
+    let _url_area = this.url + "apiareas.action?companyId=" + this.companyId;
     let _data_model = null;
     let _data_company = null;
     let _data_area = null;
@@ -929,7 +929,7 @@ export class ModuleTable implements OnInit {
         _option_model += `<option value="${obj.id}" ${obj.name == _machine.m_type ? "selected='selected'" : ""} >${obj.name}</option>`;
       }
       for (const obj of data_area) {
-        if (obj.companyid == this.companyid) {
+        if (obj.companyId == this.companyId) {
           _option_area += `<option value="${obj.id}" ${obj.name == _machine.area ? "selected='selected'" : ""} >${obj.name}</option>`;
         }
       }
@@ -1036,7 +1036,7 @@ export class ModuleTable implements OnInit {
             + `&device.cpersonnel=${out_name.value}&device.ddate=${out_date.value}`
             + `&device.proxyid=${proxy_com.value}&device.areaid=${area.value}`
             + `&device.note=${remarks.value}&device.gps=${GPS.value}`
-            + `&device.companyid=${this.companyid}&device.luser=${userid}`
+            + `&device.companyId=${this.companyId}&device.luser=${userid}`
             + `&device.id=${_machine.id}&type=1`;
           this.gs.httpGet(_url, {}, json => {
             if (json.code == 200) {
@@ -1067,7 +1067,7 @@ export class ModuleTable implements OnInit {
   //指定工厂
   setCompany(num) {
     let _machine = this.page_data[num];
-    this.gs.httpGet(Global.domain + 'api/apishowClients.action?companyId=' + this.companyid, {}, json => {
+    this.gs.httpGet(Global.domain + 'api/apishowClients.action?companyId=' + this.companyId, {}, json => {
       let _json = json;
       if (_json.code == 200) {
 
@@ -1101,7 +1101,7 @@ export class ModuleTable implements OnInit {
             let luserId = localStorage.getItem('id');
             this.gs.httpGet(this.url + 'apideviceEdit.action', {
               'device.id': _machine.id,
-              'device.companyid': this.companyid,
+              'device.companyId': this.companyId,
               'device.factoryid': proxy_com.value,
               'device.luser': luserId,
               type: 2,
@@ -1141,7 +1141,7 @@ export class ModuleTable implements OnInit {
       if (result.value) {
         var areaName = <HTMLInputElement>document.getElementById('areaName');
         var notes = <HTMLInputElement>document.getElementById('notes');
-        this.gs.httpGet(this.url + 'apiareaAdd.action?area.companyid=' + this.companyid + '&area.name=' + areaName.value + '&area.note=' + notes.value, {}, json => {
+        this.gs.httpGet(this.url + 'apiareaAdd.action?area.companyId=' + this.companyId + '&area.name=' + areaName.value + '&area.note=' + notes.value, {}, json => {
 
           if (json.code == 200) {
             this.AreaEvent.emit("ok");
@@ -1185,7 +1185,7 @@ export class ModuleTable implements OnInit {
         var areaName = <HTMLInputElement>document.getElementById('areaName');
         var notes = <HTMLInputElement>document.getElementById('notes');
 
-        this.gs.httpGet(this.url + 'apiareaEdit.action?area.id=' + this.page_data[num].id + '&area.companyid=' + this.companyid + '&area.name=' + areaName.value + '&area.note=' + notes.value, {}, json => {
+        this.gs.httpGet(this.url + 'apiareaEdit.action?area.id=' + this.page_data[num].id + '&area.companyId=' + this.companyId + '&area.name=' + areaName.value + '&area.note=' + notes.value, {}, json => {
 
           if (json.code == 200) {
             this.AreaEvent.emit("ok");

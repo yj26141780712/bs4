@@ -10,7 +10,7 @@ import { Global, GlobalService } from '../tools/services/global';
 })
 export class Company implements OnInit {
   data: any;
-  companyid: any;//公司id
+  companyId: any;//公司id
   navigations: Array<string> = ['主页', '档案管理', '公司管理'];
   module_table_thead: Array<string> = ['公司名称', '公司地址', '联系电话', '公司状态', '备注信息'];
   module_table_body = [];
@@ -21,7 +21,7 @@ export class Company implements OnInit {
 
   }
   ngOnInit() {
-    this.companyid = localStorage.getItem('companyid');
+    this.companyId = localStorage.getItem('companyId');
     this.getCompanyData(() => {
       var array = [];
       for (var i = 0; i < this.data.length; i++) {
@@ -38,7 +38,7 @@ export class Company implements OnInit {
     });
   }
   getCompanyData(callback) {
-    this.gs.httpGet(Global.domain + 'api/apicompanys.action?companyId=' + this.companyid, {}, json => {
+    this.gs.httpGet(Global.domain + 'api/apicompanys.action?companyId=' + this.companyId, {}, json => {
       this.data = json.obj;
       callback();
     })

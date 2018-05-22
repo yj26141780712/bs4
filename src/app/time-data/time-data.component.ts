@@ -19,8 +19,8 @@ export class TimeDataComponent implements OnInit {
   constructor(private gs: GlobalService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    let monitor=this.route.queryParams.subscribe(params=>{
-      this.Mapmid=params['mid'];
+    let monitor = this.route.queryParams.subscribe(params => {
+      this.Mapmid = params['mid'];
     })
     this.equipment();
     this.communicate();
@@ -129,12 +129,14 @@ export class TimeDataComponent implements OnInit {
     };
     run_m.setOption(option);
   }
+  
   getMonitorEvent(monitor) {
     this.midId = monitor;
     this.getTempData();
     this.getData();
     //this.getstatusData();
   }
+
   /**
    * 设备当前状态 当前状态 马达状态等
    */
@@ -151,18 +153,20 @@ export class TimeDataComponent implements OnInit {
       this.detailMachine.totalhour = data.totalhour;//总开机时间
       this.detailMachine.workstate = data.workstate;//工作状态
       this.detailMachine.workhour = data.workhour;//本次开机
-      this.detailMachine.percentage = (data.workhour / data.totalhour).toFixed(1);//进度条百分比
+      this.detailMachine.percentage = data.totalhour > 0 ? (data.workhour / data.totalhour).toFixed(1) : 0.0;//进度条百分比
       //console.log(data);
       //设置进度条
       $('#progress').width(this.detailMachine.percentage * 100 + "%");
       $('#progress').html(this.detailMachine.percentage * 100 + "%");
     })
   }
+
   getstatusData() {//接口有问题
     this.gs.httpGet(Global.domain + 'api/remoteproductData.action?mid=' + this.midId + '&mtime=1&', {}, json => {
 
     })
   }
+
   /**
    * 料筒温度
    */
@@ -190,7 +194,7 @@ export class TimeDataComponent implements OnInit {
       } else {
         for (var i = 0; i < 8; i++) {
           var item = { className: "gray", value: "0.00" };
-          this.temperatureData.push(item); 
+          this.temperatureData.push(item);
         }
       }
     })

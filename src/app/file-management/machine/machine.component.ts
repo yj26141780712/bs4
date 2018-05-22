@@ -15,7 +15,7 @@ export class MachineComponent implements OnInit {
   constructor(private gs: GlobalService) { }
 
   ngOnInit() {
-    let companyid = localStorage.getItem('companyid');
+    let companyId = localStorage.getItem('companyId');
     this.settings = {
       headTrHeight: 40,
       bodyTrHeight: 30,
@@ -46,7 +46,7 @@ export class MachineComponent implements OnInit {
     }
     this.source = [].concat(this.source = [].concat(array));
     let url = "http://192.168.2.229:8088/IMS/api/apideviceList.action";
-    this.gs.httpGet(url, { companyId: companyid }, json => {
+    this.gs.httpGet(url, { companyId: companyId }, json => {
       if (json.code == 200) {
         let data = json.obj;
         var array = [];

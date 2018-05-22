@@ -13,7 +13,7 @@ import { Global } from '../tools/services/global';
 
 export class SearchMachineidComponent implements OnInit {
   data: any;
-  companyid: any;
+  companyId: any;
   MachineDatas: any;//所有的数据 
   page_data: any;//当页数据
   current_page: number = 1;//当前页数
@@ -148,9 +148,9 @@ export class SearchMachineidComponent implements OnInit {
   }
   //接口
   getMachineID(callback) {
-    this.companyid = localStorage.getItem('companyid');
-    this.gs.httpGet(Global.domain + 'api/apideviceList.action?companyId=' + this.companyid || '', {}, json => {
-      //根据companyid筛选
+    this.companyId = localStorage.getItem('companyId');
+    this.gs.httpGet(Global.domain + 'api/apideviceList.action?companyId=' + this.companyId || '', {}, json => {
+      //根据companyId筛选
       var array = [];
       for (var i = 0; i < json.obj.length; i++) {
         array.push(json.obj[i]);

@@ -108,7 +108,11 @@ export class GlobalService {
             if (loader) {
                 //关闭加载效果 
             }
-            callback(json);
+            if (json.code == 200) {
+                callback(json);
+            } else {
+                this.handleInfo(json.code, json.message);
+            }
         }, err => {
             if (loader) {
                 //关闭加载效果 
@@ -146,6 +150,10 @@ export class GlobalService {
         });
     }
 
+    private handleInfo(code, msg) {
+        swal('', msg, 'error');
+    }
+
     private handleError(error: Response | any) {
         let msg = '';
         if (error.status == 400) {
@@ -166,15 +174,39 @@ export class GlobalService {
         }
     }
 
-    private httpGetALL(urlArr: Array<string>, callback) {
-
-    }
-
     httpGetToPromise(url, params): Promise<any> {
         this.headers.set("token", localStorage.getItem("stoken") || '');
         let options: RequestOptionsArgs = {
             headers: this.headers,
         };
         return this.http.get(url + this.encode(params), options).toPromise();
+    }
+
+    httpGetObservable(url, params) {
+        this.headers.set("token", localStorage.getItem("stoken") || '');
+        let options: RequestOptionsArgs = {
+            headers: this.headers,
+        };
+        return this.http.get(url + this.encode(params), options).map(res => {
+            let json = res.json();
+            let token = res.headers.get('token') || json.obj.token || '';
+            localStorage.setItem("stoken", token);
+            if (json.code != 200) {
+                this.handleInfo(json.code, json.message);
+            }
+            return json;
+        });
+    }
+
+    confirm() {
+        return swal({
+            title: "确定删除么？",
+            type: "warning",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: '确定删除',
+            cancelButtonText: '取消',
+            confirmButtonColor: "#DD6B55",
+        });
     }
 }
