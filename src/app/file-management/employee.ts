@@ -1,3 +1,4 @@
+import { EmployeeService } from './../tools/services/employee.service';
 import { Component, OnInit } from '@angular/core';
 import { NavigationComponent } from '../produce-list/navigation';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
@@ -9,61 +10,91 @@ import { Global, GlobalService } from '../tools/services/global';
   styleUrls: ['./Machine.scss']
 })
 export class Employee implements OnInit {
-  data: any;
-  companyId: any;
-  navigations: Array<string> = ['主页', '档案管理', '用户管理'];
-  module_table_thead: Array<string> = ['用户账号', '角色信息', '对应公司', '用户姓名', '联系电话', '备注信息', '状态'];
-  module_table_body: Array<Object> = [];
-  module_table_attr: Array<string> = ['user_id', 'user_message', 'company', 'username', 'phone', 'note', 'state'];
-  module_table_type: string = "employee";
-  module_table_search = { search: "user_id", name: "用户账号" }
-  constructor(private gs: GlobalService) { }
+
+  companyId: string;
+  settings: any;
+  source: any[];
+  operationObj: any;
+  constructor(private gs: GlobalService, private es: EmployeeService) { }
 
   ngOnInit() {
     this.companyId = localStorage.getItem('companyId');
-    this.getEmployee(() => {
-      var array = [];
-      for (var i = 0; i < this.data.length; i++) {
-        var item = { user_id: "", user_message: "", company: "", username: "", phone: "", note: "", state: "", id: "", password: "", roleid: "" };
-        item.user_id = this.data[i].username;
-        item.user_message = this.data[i].roleName;
-        item.company = this.data[i].companyName;
-        item.username = this.data[i].name;
-        item.phone = this.data[i].phone;
-        item.note = this.data[i].note;
-        item.state = this.data[i].status == 0 ? "正常" : "停用";
-        item.id = this.data[i].id;
-        item.password = this.data[i].password;
-        item.roleid = this.data[i].roleid;
-        array.push(item);
-      }
-      this.module_table_body = [].concat(array);
+  }
+
+  formHideOberservers() {
+    this.es.employeeSubject.subscribe(() => {
+
     });
   }
-  getEmployee(callback) {
-    this.gs.httpGet(Global.domain + 'api/apishowCompanyUsers.action?companyId=' + this.companyId, {}, json => {
-      this.data = json.obj;
-      callback();
-    })
+
+  createOperation() {
+
   }
-  getResult(msg) {
-    this.getEmployee(() => {
-      var array = [];
-      for (var i = 0; i < this.data.length; i++) {
-        var item = { user_id: "", user_message: "", company: "", username: "", phone: "", note: "", state: "", id: "", password: "", roleid: "" };
-        item.user_id = this.data[i].username;
-        item.user_message = this.data[i].roleName;
-        item.company = this.data[i].companyName;
-        item.username = this.data[i].name;
-        item.phone = this.data[i].phone;
-        item.note = this.data[i].note;
-        item.state = this.data[i].status == 0 ? "正常" : "停用";
-        item.id = this.data[i].id;
-        item.password = this.data[i].password;
-        item.roleid = this.data[i].roleid;
-        array.push(item);
-      }
-      this.module_table_body = [].concat(array);
-    });
+
+  bindSettings() {
+    this.settings = {
+      columns: [
+        { field: 'userName', title: '注塑机编号' },
+        { field: 'machineName', title: '注塑机名称' },
+        { field: 'machineType', title: '注塑机类型' },
+        { field: 'moniterId', title: '采集器编号' },
+        { field: 'outFactoryPerson', title: '出厂调试人员' },
+        { field: 'remark', title: '备注' },
+      ],
+      operation: [
+        { type: 'edit', iconClass: 'fa-pencil', title: "编辑", callBack: this.operationObj.edit },
+        { type: 'delete', iconClass: 'fa-trash', title: "停用", callBack: this.operationObj.delete },
+        { type: 'reset', iconClass: 'fa-repeat', title: "重置密码", callBack: this.operationObj.reset },
+      ],
+      search: { search: "machineCode", name: "注塑机编号" },
+    }
   }
+
+  bindSource() {
+
+  }
+  // this.getEmployee(() => {
+  //   var array = [];
+  //   for (var i = 0; i < this.data.length; i++) {
+  //     var item = { user_id: "", user_message: "", company: "", username: "", phone: "", note: "", state: "", id: "", password: "", roleid: "" };
+  //     item.user_id = this.data[i].username;
+  //     item.user_message = this.data[i].roleName;
+  //     item.company = this.data[i].companyName;
+  //     item.username = this.data[i].name;
+  //     item.phone = this.data[i].phone;
+  //     item.note = this.data[i].note;
+  //     item.state = this.data[i].status == 0 ? "正常" : "停用";
+  //     item.id = this.data[i].id;
+  //     item.password = this.data[i].password;
+  //     item.roleid = this.data[i].roleid;
+  //     array.push(item);
+  //   }
+  //   this.module_table_body = [].concat(array);
+  // });
+  // getEmployee(callback) {
+  //   this.gs.httpGet(Global.domain + 'api/apishowCompanyUsers.action?companyId=' + this.companyId, {}, json => {
+  //     this.data = json.obj;
+  //     callback();
+  //   })
+  // }
+  // getResult(msg) {
+  //   this.getEmployee(() => {
+  //     var array = [];
+  //     for (var i = 0; i < this.data.length; i++) {
+  //       var item = { user_id: "", user_message: "", company: "", username: "", phone: "", note: "", state: "", id: "", password: "", roleid: "" };
+  //       item.user_id = this.data[i].username;
+  //       item.user_message = this.data[i].roleName;
+  //       item.company = this.data[i].companyName;
+  //       item.username = this.data[i].name;
+  //       item.phone = this.data[i].phone;
+  //       item.note = this.data[i].note;
+  //       item.state = this.data[i].status == 0 ? "正常" : "停用";
+  //       item.id = this.data[i].id;
+  //       item.password = this.data[i].password;
+  //       item.roleid = this.data[i].roleid;
+  //       array.push(item);
+  //     }
+  //     this.module_table_body = [].concat(array);
+  //   });
+  // }
 }

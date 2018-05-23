@@ -3,20 +3,26 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GlobalService, Global } from '../../tools/services/global';
+import { Observable } from 'rxjs/Observable';
+import { MachineValidator } from '../../tools/directive/MachineValidator';
 
 @Component({
   selector: 'app-machine-form',
   templateUrl: './machine-form.component.html',
   styleUrls: ['./machine-form.component.scss']
 })
+
 export class MachineFormComponent implements OnInit {
-  companyId: string; 
+  companyId: string;
   luser: string;
   title: string = "注塑机新增";
   types = [];
   proxyCompanys = [];
   areas = [];
   machineForm: FormGroup;
+  formBlurCheckErrors = {
+    'moniterId': ''
+  }
   formErrors = {
     'machineCode': '',
     'machineName': '',
@@ -55,8 +61,7 @@ export class MachineFormComponent implements OnInit {
     },
   };
   item: any;
-  
-  constructor(private fb: FormBuilder,
+  constructor(private fb: FormBuilder, 
     private bsModalRef: BsModalRef,
     private modalService: BsModalService,
     private gs: GlobalService,
@@ -68,10 +73,10 @@ export class MachineFormComponent implements OnInit {
     this.companyId = localStorage.getItem('companyId')
     this.luser = localStorage.getItem('id');
     this.item = this.modalService.config.initialState['item'];
+    if (this.item) this.title = "编辑注塑机";
     this.bindData();
     this.bindSelect();
   }
-
   /**
    * 创建表单
    */
@@ -80,29 +85,18 @@ export class MachineFormComponent implements OnInit {
       'machineCode': ['', Validators.required],
       'machineName': ['', Validators.required],
       'machineType': ['', Validators.required],
-      'moniterId': ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]],
+      'moniterId': ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]], //Validators.composeAsync([this.mv.checkRepeatMonitor()])
       'outFactoryPerson': [''],
       'outFactoryDate': ['', Validators.required],
       'proxyCompany': ['', Validators.required],
       'area': ['', Validators.required],
       'gpsInfo': [''],
       'type': ['', Validators.required],
-      'remarks': [''],
+      'remark': [''],
     });
+    //注册表单值变化校验事件
     this.machineForm.valueChanges.subscribe(data => {
-      if (!this.machineForm) return;
-      for (const field in this.formErrors) {
-        this.formErrors[field] = '';
-        const control = this.machineForm.get(field);
-        //console.log(control.valid);
-        if (control && (control.dirty || control.touched) && !control.valid) {
-          console.log(control.errors);
-          const messages = this.validationMessages[field];
-          for (const key in control.errors) {
-            this.formErrors[field] += messages[key] + ' ';
-          }
-        }
-      }
+      this.gs.checkErrors(this,'machineForm');
     });
   }
 
@@ -126,7 +120,6 @@ export class MachineFormComponent implements OnInit {
     this.ms.getProxyCompanys(this.companyId).subscribe(json => {
       if (json.obj && json.obj.length > 0) {
         json.obj.forEach(obj => {
-          console.log({ id: obj.id, name: obj.name });
           this.proxyCompanys.push({ id: obj.id, name: obj.name });
           if (this.item && obj.name == this.item.proxyCompany) {
             this.machineForm.controls['proxyCompany'].setValue(obj.id);
@@ -157,6 +150,46 @@ export class MachineFormComponent implements OnInit {
   }
 
   /**
+   * 采集器编号keyup
+   * @param e 
+   */
+  moniterIdKeyup(e) {
+    this.formBlurCheckErrors['moniterId'] = '';
+    let mid = e.target.value;
+    this.gs.throttle(this.checkRepeatMonitor, this, 200, mid, null);//使用节流函数
+    //}
+  }
+
+  /**
+   * 检查采集器编号是否重复
+   * @param mid 
+   */
+  checkRepeatMonitor(mid) {
+    this.ms.checkRepeatMonitor(mid).subscribe(json => {
+      if (json.code == 201) {
+        this.formBlurCheckErrors['moniterId'] = mid ? `编号:${mid}已存在!` : '';
+        console.log(this.formBlurCheckErrors);
+      }
+    })
+  }
+
+  /**
+   * 判断表单是否有错
+   */
+  // hasError(): boolean {
+  //   console.log(this.machineForm.valid);
+  //   if (!this.machineForm.valid) {
+  //     return true;
+  //   }
+  //   for (let key in this.formErrors) {
+  //     if (this.formErrors[key]) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
+
+  /**
    * 关闭表单
    */
   close() {
@@ -169,15 +202,17 @@ export class MachineFormComponent implements OnInit {
    */
   submit(formValue) {
     if (this.item) {
-      console.log(formValue,this.item);
+      console.log(formValue, this.item);
       this.ms.editDevice(this.companyId, this.luser, this.item.id, formValue).subscribe(json => {
         if (json.code == 200) {
+          this.ms.machineSubject.next();
           this.bsModalRef.hide();
         }
       });
     } else {
       this.ms.addDevice(this.companyId, this.luser, formValue).subscribe(json => {
         if (json.code == 200) {
+          this.ms.machineSubject.next();
           this.bsModalRef.hide();
         }
       });

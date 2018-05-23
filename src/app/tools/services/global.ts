@@ -69,15 +69,6 @@ export class GlobalService {
     }
 
     httpGet(url, params, callback, loader: boolean = false) {
-        // let xhr = new XMLHttpRequest();
-        // xhr.open('get', url,true);
-        // xhr.setRequestHeader('Authorization','token eef1833dbc5748cc86a6419ea0f92d9a');  
-        // xhr.send(); 
-        // xhr.onreadystatechange = function () {
-        //     if (xhr.readyState == 4 && xhr.status == 200) {
-        //         console.log(xhr.getResponseHeader('token'));
-        //     }
-        // }
         this.headers.set("token", localStorage.getItem("stoken") || '');
         let options: RequestOptionsArgs = {
             headers: this.headers,
@@ -182,6 +173,11 @@ export class GlobalService {
         return this.http.get(url + this.encode(params), options).toPromise();
     }
 
+    /**
+     * http返回Observable<any>方法
+     * @param url api url
+     * @param params 传递参数
+     */
     httpGetObservable(url, params) {
         this.headers.set("token", localStorage.getItem("stoken") || '');
         let options: RequestOptionsArgs = {
@@ -191,13 +187,16 @@ export class GlobalService {
             let json = res.json();
             let token = res.headers.get('token') || json.obj.token || '';
             localStorage.setItem("stoken", token);
-            if (json.code != 200) {
+            if (json.code != 200 && json.code != 201) {
                 this.handleInfo(json.code, json.message);
             }
             return json;
         });
     }
 
+    /**
+     * 确认方法
+     */
     confirm() {
         return swal({
             title: "确定删除么？",
@@ -208,5 +207,44 @@ export class GlobalService {
             cancelButtonText: '取消',
             confirmButtonColor: "#DD6B55",
         });
+    }
+
+    /**
+     * 
+     * @param fn 使用节流的方法
+     * @param context this指向
+     * @param delay 延时时间
+     * @param text 传入参数
+     * @param mustApplyTime 最小执行时间 
+     */
+    throttle(fn, context, delay, text, mustApplyTime) {
+        clearTimeout(fn.timer);
+        fn.currentTime = Date.now();
+        if (!fn.startTime) {
+            fn.start = fn.currentTime;
+        }
+        if (fn.currentTime - fn.startTime > mustApplyTime) {
+            fn.call(context, text);
+            fn.startTime = fn.currentTime;
+        } else {
+            fn.timer = setTimeout(() => {
+                fn.call(context, text);
+            }, delay);
+        }
+    }
+
+    checkErrors(self,formName) {
+        if (!self[formName]) return;
+        for (const field in self.formErrors) {
+            self.formErrors[field] = '';
+            const control = self[formName].get(field);
+            if (control && (control.dirty || control.touched) && !control.valid) {
+                console.log(control.errors);
+                const messages = self.validationMessages[field];
+                for (const key in control.errors) {
+                    self.formErrors[field] += messages[key] + ' ';
+                }
+            }
+        }
     }
 }

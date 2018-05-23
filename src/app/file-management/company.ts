@@ -1,62 +1,107 @@
+import { CompanyFormComponent } from './company-form/company-form.component';
+import { CompanyService } from './../tools/services/company.service';
 import { Component, OnInit } from '@angular/core';
-import { NavigationComponent } from '../produce-list/navigation';
-import { SearchMachineidComponent } from '../search-machineid/search-machineid.component';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import { Global, GlobalService } from '../tools/services/global';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 @Component({
   selector: 'company',
   templateUrl: './company.html',
   styleUrls: ['./Machine.scss']
 })
 export class Company implements OnInit {
-  data: any;
-  companyId: any;//公司id
   navigations: Array<string> = ['主页', '档案管理', '公司管理'];
-  module_table_thead: Array<string> = ['公司名称', '公司地址', '联系电话', '公司状态', '备注信息'];
-  module_table_body = [];
-  module_table_attr: Array<string> = ['c_name', 'c_address', 'phone_number', 'c_states', 'remarks'];
-  module_table_type: string = "company";
-  module_table_search = { search: "c_name", name: "公司地址" }
-  constructor(private gs: GlobalService) {
+  bsModalRef: BsModalRef;
+  companyId: any;
+  settings: any;
+  source: any[];
+  operationObj: any;
+  constructor(private modalService: BsModalService, private gs: GlobalService, private cs: CompanyService) {
 
   }
   ngOnInit() {
     this.companyId = localStorage.getItem('companyId');
-    this.getCompanyData(() => {
-      var array = [];
-      for (var i = 0; i < this.data.length; i++) {
-        var item = { c_name: "", c_address: "", phone_number: "", c_states: "", remarks: "", id: "" };
-        item.c_name = this.data[i].name;
-        item.c_address = this.data[i].address;
-        item.phone_number = this.data[i].phone;
-        item.c_states = this.data[i].state;
-        item.remarks = this.data[i].note;
-        item.id = this.data[i].id;
-        array.push(item);
-      }
-      this.module_table_body = [].concat(array);
+    this.formHideObservers();
+    this.createOperation();
+    this.bindSettings();
+    this.bindSource();
+  }
+
+  /**
+ * 注册窗体关闭时执行事件
+ */
+  formHideObservers() {
+    this.cs.companySubject.subscribe(() => {
+      this.bindSource();
     });
   }
-  getCompanyData(callback) {
-    this.gs.httpGet(Global.domain + 'api/apicompanys.action?companyId=' + this.companyId, {}, json => {
-      this.data = json.obj;
-      callback();
-    })
+
+  operation() {
   }
-  getResult(msg) {
-    this.getCompanyData(() => {
-      var array = [];
-      for (var i = 0; i < this.data.length; i++) {
-        var item = { c_name: "", c_address: "", phone_number: "", c_states: "", remarks: "", id: "" };
-        item.c_name = this.data[i].name;
-        item.c_address = this.data[i].address;
-        item.phone_number = this.data[i].phone;
-        item.c_states = this.data[i].state;
-        item.remarks = this.data[i].note;
-        item.id = this.data[i].id;
-        array.push(item);
+  /**
+   * 创建自定义操作
+   */
+  createOperation() {
+    let self = this;
+    this.operation.prototype.edit = (item) => {
+      let initialState = {
+        item: item
       }
-      this.module_table_body = [].concat(array);
-    })
+      self.bsModalRef = self.modalService.show(CompanyFormComponent, { initialState });
+    }
+    this.operation.prototype.delete = (item) => {
+      self.gs.confirm().then(value => {
+        if (value) {
+          self.cs.deleteCompany(self.companyId, item.id).subscribe(json => {
+            if (json.code == 200) {
+
+            }
+          });
+        }
+      });
+    }
+    this.operationObj = new this.operation();
+  }
+
+  bindSettings() {
+    console.log(this.operationObj);
+    this.settings = {
+      columns: [
+        //{ field: 'sn', title: '序号' },
+        { field: 'companyName', title: '公司名称' },
+        { field: 'companyAddress', title: '公司地址' },
+        { field: 'phone', title: '联系电话' },
+        { field: 'state', title: '公司状态' },
+        { field: 'remark', title: '备注信息' },
+      ],
+      operation: [
+        { type: 'edit', iconClass: 'fa-pencil', title: "编辑", callBack: this.operationObj.edit },
+        { type: 'delete', iconClass: 'fa-trash', title: "删除", callBack: this.operationObj.delete },
+      ],
+      search: { search: "companyName", name: "公司名称" },
+    }
+  }
+
+  bindSource() {
+    this.cs.getCompanyList(this.companyId).subscribe(json => {
+      if (json.code == 200) {
+        let data = json.obj;
+        var array = [];
+        for (var i = 0; i < data.length; i++) {
+          var item: any = {};
+          item.companyName = data[i].name;
+          item.companyAddress = data[i].address;
+          item.phone = data[i].phone;
+          item.state = data[i].state;
+          item.remark = data[i].note;
+          item.id = data[i].id;
+          array.push(item);
+        }
+        this.source = [].concat(array);
+      }
+    });
+  }
+
+  add() {
+    this.bsModalRef = this.modalService.show(CompanyFormComponent);
   }
 }

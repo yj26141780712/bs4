@@ -11,6 +11,7 @@ import { RegisterComponent } from './register/register.component';
 import { ModalModule } from 'ngx-bootstrap';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,

@@ -3,8 +3,6 @@ import { MachineFormComponent } from './machine-form/machine-form.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { GlobalService } from './../tools/services/global';
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { NavigationComponent } from '../produce-list/navigation';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import { Global } from '../tools/services/global';
 
 @Component({
@@ -13,7 +11,7 @@ import { Global } from '../tools/services/global';
   styleUrls: ['./Machine.scss']
 })
 export class Machine implements OnInit {
-
+  navigations: Array<string> = ['主页', '档案管理', '注塑机管理'];
   bsModalRef: BsModalRef;
   companyId: any;
   settings: any;
@@ -25,17 +23,17 @@ export class Machine implements OnInit {
 
   ngOnInit() {
     this.companyId = localStorage.getItem("companyId");
-    this.createObservers();
+    this.formHideObservers();
     this.createOperation();
     this.bindSettings();
     this.bindSource();
   }
 
   /**
-   * 组件交互事件 当新增编辑完之后重新绑定数据
+   * 注册窗体关闭时执行事件
    */
-  createObservers() {
-    this.modalService.onHide.subscribe(res => {
+  formHideObservers() {
+    this.ms.machineSubject.subscribe(() => {
       this.bindSource();
     });
   }
@@ -52,20 +50,23 @@ export class Machine implements OnInit {
       self.bsModalRef = self.modalService.show(MachineFormComponent, { initialState });
     }
     this.operation.prototype.delete = (item) => {
-      console.log(self);
       self.gs.confirm().then(value => {
         if (value) {
-          self.ms.delDevice(self.companyId, item.id).subscribe(json => { });
+          self.ms.delDevice(self.companyId, item.id).subscribe(json => {
+            self.bindSource();
+          });
         }
       });
     }
     this.operationObj = new this.operation();
   }
 
+  /**
+   * 绑定表格设置
+   */
   bindSettings() {
     this.settings = {
       columns: [
-        { field: 'sn', title: '序号' },
         { field: 'machineCode', title: '注塑机编号' },
         { field: 'machineName', title: '注塑机名称' },
         { field: 'machineType', title: '注塑机类型' },
@@ -77,16 +78,19 @@ export class Machine implements OnInit {
         { field: 'proxyCompany', title: '代理公司' },
         { field: 'plasticCompany', title: '塑料厂' },
         { field: 'type', title: '类别' },
-        { field: 'remarks', title: '备注' },
+        { field: 'remark', title: '备注' },
       ],
       operation: [
-        { type: 'edit', iconClass: 'fa-pencil', title: "编辑", callBack: this.operationObj.edit, self: this },
-        { type: 'delete', iconClass: 'fa-trash', title: "删除", callBack: this.operationObj.delete, self: this },
+        { type: 'edit', iconClass: 'fa-pencil', title: "编辑", callBack: this.operationObj.edit },
+        { type: 'delete', iconClass: 'fa-trash', title: "删除", callBack: this.operationObj.delete },
       ],
-      search: { search: "m_id", name: "注塑机编号" },
+      search: { search: "machineCode", name: "注塑机编号" },
     }
   }
 
+  /**
+   * 绑定表格数据
+   */
   bindSource() {
     this.ms.getDeviceList(this.companyId).subscribe(json => {
       if (json.code == 200) {
@@ -108,7 +112,7 @@ export class Machine implements OnInit {
           item.proxyCompany = data[i].proxyName;
           item.plasticCompany = data[i].factoryName;
           item.type = data[i].modelName;
-          item.remarks = data[i].note || '';
+          item.remark = data[i].note || '';
           item.id = data[i].id;
           item.gpsInfo = data[i].x && data[i].y ? data[i].x + ',' + data[i].y : ''
           array.push(item);

@@ -1,12 +1,12 @@
-import { MachineService } from './../tools/services/machine.service';
+import { MachineService } from './../../tools/services/machine.service';
 import { Component, OnInit, Input, Output, OnChanges, AfterViewInit, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { Global } from '../tools/services/global';
-import * as $ from 'jquery';
-
+import { Global } from '../../tools/services/global';
+import * as $ from 'jquery'; 
+ 
 @Component({
   selector: 'app-table',
-  templateUrl: './table.component.html',
+  templateUrl: './table.component.html', 
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit, OnChanges, AfterViewInit {
@@ -44,7 +44,6 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit {
     }
     this.companyId = localStorage.getItem('companyId');
     this.isAdd = this.addEvent.observers.length > 0;
-    console.log(this.isAdd);
   }
   ngAfterViewInit() {
     $('.module-table thead td').click(function () {
@@ -65,6 +64,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit {
     })
   }
   ngOnChanges() {
+    console.log(this.source);
     this.current_page = 1;
     if (this.settings) {
       this.module_table_thead = [];
